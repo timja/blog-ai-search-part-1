@@ -21,3 +21,13 @@ resource "azurerm_storage_container" "example" {
   name                 = "example"
   storage_account_name = azurerm_storage_account.default.name
 }
+
+data "azurerm_client_config" "current" {}
+
+# permission for logged in user to upload to the storage account
+resource "azurerm_role_assignment" "storage_blob_data_contributor_user" {
+  principal_id = data.azurerm_client_config.current.object_id
+  scope        = azurerm_storage_account.default.id
+
+  role_definition_name = "Storage Blob Data Contributor"
+}
